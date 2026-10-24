@@ -47,7 +47,7 @@ export function Header() {
             className="rounded-md px-3 py-2 text-sm font-medium text-ink-soft hover:bg-paper-2"
             activeProps={{ className: "rounded-md bg-paper-2 px-3 py-2 text-sm font-medium text-ink" }}
           >
-            Harga
+            Kerja sama
           </Link>
         </nav>
       </div>
@@ -77,10 +77,10 @@ export function Footer() {
         </div>
         <div className="text-sm text-sand">
           <p className="font-medium text-paper">Proposal</p>
-          <a href="/pitch/HUNI-Pitch-Deck.pptx" className="mt-2 inline-block underline decoration-clay underline-offset-4">
+          <a href="/pitch/HUNI-Pitch-Deck-Lengkap.pptx" className="mt-2 inline-block underline decoration-clay underline-offset-4">
             Unduh pitch deck
           </a>
-          <p className="mt-3">Harga, rincian bangun, dan biaya rawat ada di berkas itu.</p>
+          <p className="mt-3">Model bagi hasil, rincian kos, futsal, dan cafe ada di berkas itu.</p>
         </div>
       </div>
     </footer>
