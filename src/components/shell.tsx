@@ -80,6 +80,10 @@ export function Footer() {
           <a href="/pitch/HUNI-Pitch-Deck-Lengkap.pptx" className="mt-2 inline-block underline decoration-clay underline-offset-4">
             Unduh pitch deck
           </a>
+          <br />
+          <a href="/pitch/Cafe_Futsall_Kosan.xlsx" className="mt-1 inline-block underline decoration-clay underline-offset-4">
+            Unduh hitungan Excel
+          </a>
           <p className="mt-3">Model bagi hasil, rincian kos, futsal, dan cafe ada di berkas itu.</p>
         </div>
       </div>
