@@ -3,7 +3,7 @@ import { persist } from "zustand/middleware";
 
 export const COURTS = [
   { id: "A", name: "Lapangan A", surface: "Vinyl", rate: 120_000 },
-  { id: "B", name: "Lapangan B", surface: "Sintetis", rate: 100_000 },
+  { id: "B", name: "Lapangan B", surface: "Sintetis", rate: 120_000 },
 ];
 export const HOURS = [16, 17, 18, 19, 20, 21, 22];
 

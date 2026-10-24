@@ -18,7 +18,7 @@ const sand = "E7DCC8";
 const line = "D9CFBF";
 const muted = "6F675C";
 const soft = "3F382F";
-const TOTAL = 26;
+const TOTAL = 28;
 const deck = "/home/claude/ws/artifacts/deck";
 
 function light(slide) {
@@ -493,8 +493,7 @@ mockSlide(8, "Papan pemilik", "Pengajuan dari form muncul di sini.", "pemilik-in
 }
 
 {
-const K = 1.3333, F = 1.2, TOT = 26;
-const S = ["Konservatif", "Realistis", "Optimis"];
+const K = 1.3333, F = 1.2, TOT = 28;
 const jt = (n) => (n / 1e6).toFixed(2).replace(".", ",") + " jt";
 const rp = (n) => "Rp" + Math.round(n).toLocaleString("id-ID");
 let n = 11;
@@ -516,19 +515,21 @@ const ser = (name, arr) => ({ name, labels: S, values: arr });
 
 // ---- data (sama dengan Cafe_Futsall_Kosan.xlsx)
 const kosTotal = 2.8e6 + 12 * 2.3e6 + 7 * 2.0e6, kosTarget = kosTotal * 0.8, kosSys = kosTarget * 0.15, kosOps = kosTarget * 0.15, kosNet = kosTarget - kosSys - kosOps;
-const fut = [84, 112, 140].map((jam) => { const rev = jam * 120000; return { jam, rev, share: rev * 0.3, owner: rev * 0.7 }; });
-const cafe = [[45, 30000], [70, 33000], [100, 35000]].map(([pax, sp]) => {
-  const rev = pax * sp * 30, share = rev * 0.5, hpp = rev * 0.35, pack = rev * 0.03, fixed = 4.1e6, pay0 = 7.7e6, bpjs = pay0 * 0.1, pay = pay0 + bpjs, mkt = rev * 0.08, ev = rev * 0.05, mt = rev * 0.05;
-  const ownerCost = hpp + pack + fixed, fee = share - (pay + mkt + ev + mt);
-  return { pax, sp, rev, share, hpp, pack, fixed, pay, bpjs, mkt, ev, mt, ownerCost, fee, ownerNet: rev - share - ownerCost };
+const S2 = ["Realistis", "Target"];
+const ser2 = (name, arr) => ({ name, labels: S2, values: arr });
+const fut = [[5, 3e6], [7, 5e6]].map(([jh, ev]) => { const jam = 2 * jh * 28, book = jam * 120000, rev = book + ev; return { jh, jam, book, ev, rev, share: rev * 0.3, owner: rev * 0.7 }; });
+const cafe = [[70, 33000], [80, 33333]].map(([pax, sp]) => {
+  const rev = pax * sp * 30, share = rev * 0.2, hpp = rev * 0.35, pack = rev * 0.03, fixed = 4.1e6, pay = 8.47e6;
+  const ownerCost = hpp + pack + fixed;
+  return { pax, sp, rev, share, hpp, pack, fixed, pay, ownerCost, ownerNet: rev - share - pay - ownerCost };
 });
 
 // 11 model
 let s = base(); head(s, "Model kerja sama: bagi hasil, bukan paket harga", "Tidak ada pilihan paket. Pengelola dibayar dari persentase omzet.");
 box(s, 0.35, 1.5, 3.0, 3.2, "Kos & kontrakan", ["30% dari pendapatan sewa", "15% System & Marketing", "15% Perawatan & operasional", "Build web diambil dari pos 15% System"]);
 box(s, 3.5, 1.5, 3.0, 3.2, "Lapangan futsal", ["30% dari total revenue", "Maintenance 10%, event 8%", "Marketing 7%, fee pengelola 5%", "Booking lewat web HUNI"], moss);
-box(s, 6.65, 1.5, 3.0, 3.2, "Cafe", ["50% dari omzet", "Gaji 3 karyawan, marketing, event, maintenance", "Sisa 50% untuk pemilik: bahan baku, listrik, dll", "Fee pengelola = sisa dari 50%"], clayDeep);
-T(s, "Angka dasar: file Cafe_Futsall_Kosan.xlsx. Hunian kos 80%, futsal Rp120 rb x 112 jam.", { x: 0.35, y: 4.85, w: 9.3, h: 0.35, fontSize: 12, color: muted });
+box(s, 6.65, 1.5, 3.0, 3.2, "Cafe", ["20% dari omzet", "Include marketing, branding, operasional, biaya POS", "Karyawan 3 orang dihitung terpisah", "Sisanya net income owner"], clayDeep);
+T(s, "Angka dasar: file Cafe_Futsall_Kosan.xlsx. Hunian kos 80%, futsal Rp120 rb per jam, cafe target Rp80 jt per bulan.", { x: 0.35, y: 4.85, w: 9.3, h: 0.35, fontSize: 12, color: muted });
 
 // 12 kosan income
 s = base(); head(s, "Kos: potensi pendapatan", "20 unit contoh, hunian target 80%.");
@@ -548,61 +549,84 @@ box(s, 0.35, 3.9, 9.3, 1.3, "Catatan", ["Total biaya bangun ditetapkan setelah r
 s = base(); head(s, "Enam minggu sampai tayang", "Tanpa pembayaran di muka; bangun web masuk ke pos System & Marketing.");
 table(s, [["Minggu", "Pekerjaan"], ["1", "Riset alur, peta halaman, kumpulkan foto dan data unit"], ["2", "Desain layar utama dan ponsel, revisi dua putaran"], ["3–4", "Katalog, pencarian, halaman unit, form sewa"], ["5", "Papan kamar, grafik hunian, modul booking futsal"], ["6", "Isi data awal, training, domain & hosting, tayang"]], [1.5, 7.8], 1.5, 0.5);
 
-// 16 pembatas
+// 16 struktur
+const rbox = (s, x, y, w, h, t, sub, fill) => {
+  s.addShape(pptx.ShapeType.roundRect, { x: x * K, y: y * K, w: w * K, h: h * K, fill: { color: fill || card }, line: { color: fill ? fill : line, width: 0.75 }, rectRadius: 0.08 });
+  T(s, t, { x: x + 0.1, y: y + 0.08, w: w - 0.2, h: 0.32, fontSize: 13, bold: true, color: fill ? paper : ink, fontFace: "Georgia", align: "center" });
+  T(s, sub, { x: x + 0.1, y: y + 0.42, w: w - 0.2, h: h - 0.5, fontSize: 10.5, color: fill ? sand : soft, align: "center", valign: "top" });
+};
+const ln = (s, x1, y1, x2, y2) => s.addShape(pptx.ShapeType.line, { x: Math.min(x1, x2) * K, y: Math.min(y1, y2) * K, w: Math.abs(x2 - x1) * K, h: Math.abs(y2 - y1) * K, line: { color: muted, width: 1.25 } });
+s = base(); head(s, "Struktur organisasi", "Satu pintu operasional untuk kos, futsal, dan cafe.");
+rbox(s, 3.4, 1.4, 2.5, 0.8, "Pak Riki", "Direktur", ink);
+ln(s, 4.65, 2.2, 4.65, 2.42); ln(s, 3.0, 2.42, 7.0, 2.42); ln(s, 3.0, 2.42, 3.0, 2.65); ln(s, 7.0, 2.42, 7.0, 2.65);
+rbox(s, 1.2, 2.65, 3.6, 1.0, "Andre Luckyta", "Operasional & PPIC semua unit: jadwal, stok, karyawan, laporan", clay);
+rbox(s, 5.5, 2.65, 3.0, 1.0, "Nana Rusyana", "Pengawas & approval: pengeluaran besar, kontrak, laporan bulanan", moss);
+const kids = [["Tim Marketing", "sosmed, sekolah, komunitas"], ["Tim Event", "turnamen, partner & sponsor"], ["Cafe", "waiters, cooks, kasir"], ["Futsal", "penjaga, wasit"], ["Kos & kontrakan", "pengelola unit"]];
+ln(s, 3.0, 3.65, 3.0, 3.9); ln(s, 1.05, 3.9, 8.05, 3.9);
+kids.forEach(([t, sub], i) => { const x = 0.2 + i * 1.8; ln(s, x + 0.85, 3.9, x + 0.85, 4.1); rbox(s, x, 4.1, 1.7, 1.0, t, sub); });
+
+// 17 dashboard
+s = base(); head(s, "Pelaporan: dashboard terhubung ke POS", "Tahap berikut setelah operasional jalan. Biaya POS & dashboard sudah masuk jatah 2% cafe.");
+box(s, 0.35, 1.5, 2.95, 3.4, "1. Sumber data", ["POS cafe: transaksi, menu terjual, kasir", "Booking futsal dari web HUNI", "Catatan sewa kos dan pembayaran", "Input stok dan absensi karyawan"]);
+box(s, 3.45, 1.5, 2.95, 3.4, "2. Dashboard", ["Omzet harian dan bulanan per unit", "HPP vs omzet, jam futsal terisi", "Hunian kamar kos", "Pembagian: pengelola, karyawan, owner"], moss);
+box(s, 6.55, 1.5, 3.1, 3.4, "3. Laporan & approval", ["Laporan mingguan dan bulanan otomatis", "Pak Riki: lihat ringkasan semua unit", "Pak Nana: approval pengeluaran dan laporan", "Andre: input dan tindak lanjut"], clayDeep);
+
+// 18 pembatas
 s = pptx.addSlide(); s.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 13.333, h: 7.5, fill: { color: ink } }); n++;
 s.addText("Futsal & Cafe", { x: 0.7, y: 1.9, w: 12, h: 1, fontFace: "Georgia", fontSize: 44, bold: true, color: paper, margin: 0 });
-s.addText("Estimasi pendapatan dan bagi hasil. Pengelola memegang manajemen penuh:\nmaintenance, event, marketing, karyawan, dan penggajian.", { x: 0.7, y: 3.1, w: 12, h: 1, fontFace: "Calibri", fontSize: 20, color: sand, margin: 0 });
+s.addText("Dua skenario: Realistis dan Target. Futsal didorong turnamen sekolah dan tim marketing,\ncafe ditargetkan Rp80 jt per bulan lewat marketing dan kerja sama event.", { x: 0.7, y: 3.1, w: 12, h: 1, fontFace: "Calibri", fontSize: 20, color: sand, margin: 0 });
 s.addShape(pptx.ShapeType.rect, { x: 0.7, y: 4.4, w: 1.6, h: 0.08, fill: { color: clay } });
-s.addText("Futsal: 30% dari revenue   ·   Cafe: 50% dari omzet   ·   Angka asumsi, wajib divalidasi dengan data lokasi", { x: 0.7, y: 4.7, w: 12, h: 0.5, fontFace: "Calibri", fontSize: 14, color: "D9CFBF", margin: 0 });
+s.addText("Futsal: 30% dari revenue   ·   Cafe: 20% dari omzet   ·   Angka asumsi, divalidasi lewat dashboard POS", { x: 0.7, y: 4.7, w: 12, h: 0.5, fontFace: "Calibri", fontSize: 14, color: "D9CFBF", margin: 0 });
 
-// 17 futsal revenue
-s = base(); head(s, "Futsal: pendapatan per bulan", "Rate Rp120 rb per jam. Skenario realistis = 4 jam x 28 hari (sama dengan Excel).");
-table(s, [["Komponen", ...S], ["Jam terjual / bulan", ...fut.map((f) => f.jam)], ["Total revenue", ...fut.map((f) => jt(f.rev))], ["Bagian pengelola 30%", ...fut.map((f) => jt(f.share))], ["Net income owner 70%", ...fut.map((f) => jt(f.owner))]], [3.6, 1.9, 1.9, 1.9], 1.5, 0.45, [4]);
-T(s, "Setahun (realistis): revenue " + jt(fut[1].rev * 12) + ". Pendapatan kantin dan event belum dihitung.", { x: 0.35, y: 4.0, w: 9.3, h: 0.4, fontSize: 13, color: muted });
+// 19 futsal revenue
+s = base(); head(s, "Futsal: pendapatan per bulan", "2 lapangan, rate Rp120 rb per jam. Target didorong turnamen sekolah dan tim marketing.");
+table(s, [["Komponen", ...S2], ["Jam terjual / hari / lapangan", ...fut.map((f) => f.jh)], ["Total jam terjual / bulan", ...fut.map((f) => f.jam)], ["Sewa lapangan", ...fut.map((f) => jt(f.book))], ["Turnamen sekolah / event (bersih)", ...fut.map((f) => jt(f.ev))], ["Total revenue", ...fut.map((f) => jt(f.rev))], ["Bagian pengelola 30%", ...fut.map((f) => jt(f.share))], ["Net income owner 70%", ...fut.map((f) => jt(f.owner))]], [4.5, 2.4, 2.4], 1.45, 0.42, [5, 7]);
+T(s, "Setahun: revenue " + fut.map((f) => jt(f.rev * 12)).join(" (realistis) / ") + " (target).", { x: 0.35, y: 4.95, w: 9.3, h: 0.3, fontSize: 12, color: muted });
 
-// 18 futsal 30%
-s = base(); head(s, "Futsal: 30% dipakai untuk apa", "Usulan: maintenance 10 · event 8 · marketing 7 · fee pengelola 5.");
-table(s, [["Pos (dari 30%)", "Porsi", ...S], ["Maintenance lapangan", "10%", ...fut.map((f) => jt(f.rev * 0.1))], ["Event management", "8%", ...fut.map((f) => jt(f.rev * 0.08))], ["Marketing", "7%", ...fut.map((f) => jt(f.rev * 0.07))], ["Fee pengelola", "5%", ...fut.map((f) => jt(f.rev * 0.05))], ["Total bagian pengelola", "30%", ...fut.map((f) => jt(f.share))]], [3.3, 1.0, 1.67, 1.67, 1.66], 1.45, 0.4);
-chart(s, [ser("Maintenance", fut.map((f) => f.rev * 0.1 / 1e6)), ser("Event", fut.map((f) => f.rev * 0.08 / 1e6)), ser("Marketing", fut.map((f) => f.rev * 0.07 / 1e6)), ser("Fee", fut.map((f) => f.rev * 0.05 / 1e6))], 3.95, 1.35, [moss, clay, "E0A458", muted]);
+// 20 futsal 30%
+s = base(); head(s, "Futsal: 30% dipakai untuk apa", "Maintenance 8 · event 9 · marketing 9 · fee pengelola 4.");
+table(s, [["Pos (dari 30%)", "Porsi", ...S2], ["Maintenance lapangan", "8%", ...fut.map((f) => jt(f.rev * 0.08))], ["Event management (turnamen sekolah)", "9%", ...fut.map((f) => jt(f.rev * 0.09))], ["Marketing (tim marketing)", "9%", ...fut.map((f) => jt(f.rev * 0.09))], ["Fee pengelola / operasional", "4%", ...fut.map((f) => jt(f.rev * 0.04))], ["Total bagian pengelola", "30%", ...fut.map((f) => jt(f.share))]], [4.3, 1.2, 1.9, 1.9], 1.45, 0.42);
+chart(s, [ser2("Maintenance", fut.map((f) => f.rev * 0.08 / 1e6)), ser2("Event", fut.map((f) => f.rev * 0.09 / 1e6)), ser2("Marketing", fut.map((f) => f.rev * 0.09 / 1e6)), ser2("Fee", fut.map((f) => f.rev * 0.04 / 1e6))], 4.1, 1.15, [moss, clay, "E0A458", muted]);
 
-// 19 futsal event & marketing
-s = base(); head(s, "Futsal: event & marketing", "Dibiayai dari porsi event 8% dan marketing 7%.");
-box(s, 0.35, 1.5, 4.55, 3.5, "Event management", ["Mini-league bulanan 8 tim", "Turnamen antar kantor / sekolah tiap kuartal", "Nobar pertandingan besar", "Sparring & open play untuk jam sepi", "Tugas: jadwal, wasit, hadiah, laporan"]);
-box(s, 5.1, 1.5, 4.55, 3.5, "Marketing", ["Instagram & TikTok: highlight match, slot kosong harian", "Broadcast WhatsApp ke komunitas dan pemesan lama", "Promo jam sepi (hari kerja 16.00–18.00)", "Booking lewat web (halaman /futsal HUNI)", "Kerja sama komunitas, sekolah, kantor sekitar"], moss);
+// 21 futsal event & marketing
+s = base(); head(s, "Futsal: turnamen sekolah & tim marketing", "Dibiayai dari porsi event 9% dan marketing 9%.");
+box(s, 0.35, 1.5, 4.55, 3.5, "Turnamen antar sekolah", ["Liga pelajar SMP/SMA tiap bulan atau kuartal", "Biaya daftar per tim, sponsor lokal, kantin", "Final di lapangan sendiri, dokumentasi untuk konten", "Tugas: jadwal, wasit, hadiah, laporan hasil"]);
+box(s, 5.1, 1.5, 4.55, 3.5, "Tim marketing bergerak", ["Kunjungan ke sekolah dan guru olahraga", "IG/TikTok: highlight match, slot kosong harian", "Broadcast WhatsApp ke komunitas dan kantor", "Promo jam sepi hari kerja", "Booking lewat web (halaman /futsal HUNI)"], moss);
 
-// 20 cafe dasar
-s = base(); head(s, "Cafe: dasar hitungan", "Tiga skenario omzet, 3 karyawan tetap.");
-box(s, 0.35, 1.5, 4.55, 3.5, "Omzet", ["Pelanggan per hari: 45 / 70 / 100", "Belanja rata-rata Rp30 rb / 33 rb / 35 rb", "Buka 30 hari per bulan, 10.00–21.00", "Omzet: " + cafe.map((c) => jt(c.rev)).join(" / ")]);
-box(s, 5.1, 1.5, 4.55, 3.5, "Karyawan & bagi hasil", ["3 orang: waiters, cooks, kasir", "Bagian pengelola 50% dari omzet", "Gaji, marketing, event, maintenance keluar dari 50% ini", "Bahan baku, listrik, air, gas, internet: ditanggung pemilik dari 50% sisanya"], moss);
+// 22 cafe dasar
+s = base(); head(s, "Cafe: dasar hitungan", "Dua skenario. Target omzet Rp80 jt per bulan.");
+box(s, 0.35, 1.5, 4.55, 3.5, "Omzet", ["Realistis: 70 pelanggan x Rp33 rb x 30 hari = Rp69,3 jt", "Target: 80 pelanggan per hari = Rp80 jt", "Push lewat tim marketing dan kerja sama event", "Buka 30 hari, 10.00–21.00"]);
+box(s, 5.1, 1.5, 4.55, 3.5, "Cara hitung", ["Pengelola 20% omzet: marketing, branding, operasional, biaya POS", "Karyawan 3 orang + BPJS/THR dihitung terpisah", "Biaya pemilik: bahan baku, packaging, listrik, air, gas, internet", "Sisanya net income owner"], moss);
 
-// 21 cafe revenue
-s = base(); head(s, "Cafe: omzet dan bagi hasil", "Bulanan, juta rupiah.");
-table(s, [["Komponen", ...S], ["Pelanggan / hari", ...cafe.map((c) => c.pax)], ["Belanja rata-rata", ...cafe.map((c) => rp(c.sp))], ["Omzet / bulan", ...cafe.map((c) => jt(c.rev))], ["Bagian pengelola 50%", ...cafe.map((c) => jt(c.share))], ["Sisa untuk pemilik 50%", ...cafe.map((c) => jt(c.rev - c.share))]], [3.6, 1.9, 1.9, 1.9], 1.5, 0.42, [3]);
-T(s, "Setahun (realistis): omzet " + jt(cafe[1].rev * 12), { x: 0.35, y: 4.3, w: 9.3, h: 0.4, fontSize: 14, bold: true, color: moss });
+// 23 cafe ringkasan
+s = base(); head(s, "Cafe: ringkasan per bulan", "Omzet dikurangi bagian pengelola, karyawan, dan biaya pemilik.");
+table(s, [["Komponen", ...S2], ["Omzet / bulan", ...cafe.map((c) => jt(c.rev))], ["Bagian pengelola 20% (marketing, branding, operasional, POS)", ...cafe.map((c) => jt(c.share))], ["Karyawan 3 orang + BPJS/THR", ...cafe.map((c) => jt(c.pay))], ["Biaya pemilik (bahan, listrik, dll)", ...cafe.map((c) => jt(c.ownerCost))], ["Net income owner", ...cafe.map((c) => jt(c.ownerNet))]], [5.3, 2.0, 2.0], 1.5, 0.5);
+T(s, "Setahun: net owner " + cafe.map((c) => jt(c.ownerNet * 12)).join(" (realistis) / ") + " (target).", { x: 0.35, y: 4.7, w: 9.3, h: 0.35, fontSize: 13, bold: true, color: moss });
 
-// 22 biaya pemilik
-s = base(); head(s, "Cafe: biaya ditanggung pemilik", "Dari sisa 50% omzet.");
-table(s, [["Pos", ...S], ["Sisa 50% untuk pemilik", ...cafe.map((c) => jt(c.rev - c.share))], ["Bahan baku (35%)", ...cafe.map((c) => jt(c.hpp))], ["Packaging & habis pakai (3%)", ...cafe.map((c) => jt(c.pack))], ["Listrik 2,5 · air 0,4 · gas 0,5", ...cafe.map(() => "3,40 jt")], ["Internet 0,4 · kebersihan 0,3", ...cafe.map(() => "0,70 jt")], ["Sewa tempat (0 = milik sendiri)", ...cafe.map(() => "0,00 jt")], ["Sisa pemilik setelah biaya", ...cafe.map((c) => jt(c.ownerNet))]], [3.9, 1.8, 1.8, 1.8], 1.5, 0.42);
+// 24 pengelola 20%
+s = base(); head(s, "Cafe: 20% pengelola dipakai untuk apa", "Operasional 8 · marketing & event 7 · branding 3 · POS & dashboard 2.");
+table(s, [["Pos (dari 20%)", "Porsi", ...S2], ["Operasional (PPIC, pengawasan harian)", "8%", ...cafe.map((c) => jt(c.rev * 0.08))], ["Marketing & event (tim marketing, partner)", "7%", ...cafe.map((c) => jt(c.rev * 0.07))], ["Branding (konten, desain, media)", "3%", ...cafe.map((c) => jt(c.rev * 0.03))], ["Biaya POS & dashboard", "2%", ...cafe.map((c) => jt(c.rev * 0.02))], ["Total bagian pengelola", "20%", ...cafe.map((c) => jt(c.share))]], [4.5, 1.1, 1.85, 1.85], 1.45, 0.42);
+chart(s, [ser2("Operasional", cafe.map((c) => c.rev * 0.08 / 1e6)), ser2("Marketing & event", cafe.map((c) => c.rev * 0.07 / 1e6)), ser2("Branding", cafe.map((c) => c.rev * 0.03 / 1e6)), ser2("POS", cafe.map((c) => c.rev * 0.02 / 1e6))], 4.1, 1.15, [moss, clay, "E0A458", muted]);
 
-// 23 biaya pengelola
-s = base(); head(s, "Cafe: 50% pengelola dipakai untuk apa", "Karyawan dulu, lalu marketing, event, maintenance; sisanya fee pengelola.");
-table(s, [["Pos (dari 50%)", ...S], ["Bagian pengelola 50%", ...cafe.map((c) => jt(c.share))], ["Gaji 3 karyawan + BPJS/THR", ...cafe.map((c) => jt(c.pay))], ["Marketing (8%)", ...cafe.map((c) => jt(c.mkt))], ["Event (5%)", ...cafe.map((c) => jt(c.ev))], ["Maintenance alat & tempat (5%)", ...cafe.map((c) => jt(c.mt))], ["Fee pengelola (sisa)", ...cafe.map((c) => jt(c.fee))]], [3.9, 1.8, 1.8, 1.8], 1.45, 0.4);
-chart(s, [ser("Gaji", cafe.map((c) => c.pay / 1e6)), ser("Marketing", cafe.map((c) => c.mkt / 1e6)), ser("Event", cafe.map((c) => c.ev / 1e6)), ser("Maintenance", cafe.map((c) => c.mt / 1e6)), ser("Fee", cafe.map((c) => c.fee / 1e6))], 4.1, 1.25, [moss, clay, "E0A458", muted, clayDeep]);
+// 25 biaya pemilik
+s = base(); head(s, "Cafe: biaya pemilik", "Bahan baku, packaging, dan biaya tetap.");
+table(s, [["Pos", ...S2], ["Bahan baku (35%)", ...cafe.map((c) => jt(c.hpp))], ["Packaging & habis pakai (3%)", ...cafe.map((c) => jt(c.pack))], ["Listrik 2,5 · air 0,4 · gas 0,5", ...cafe.map(() => "3,40 jt")], ["Internet 0,4 · kebersihan 0,3", ...cafe.map(() => "0,70 jt")], ["Sewa tempat (0 = milik sendiri)", ...cafe.map(() => "0,00 jt")], ["Total biaya pemilik", ...cafe.map((c) => jt(c.ownerCost))]], [5.3, 2.0, 2.0], 1.5, 0.45);
 
-// 24 karyawan
-s = base(); head(s, "Cafe: 3 karyawan dan penggajian", "Gaji pokok asumsi, cek UMK setempat.");
-table(s, [["Posisi", "Gaji / bulan", "Tugas"], ["Waiters", rp(2.4e6), "Antar pesanan, bersih meja, layani pelanggan"], ["Cooks", rp(2.8e6), "Masak, siapkan bahan, jaga stok dapur"], ["Kasir", rp(2.5e6), "Transaksi, catat penjualan, tutup kas harian"], ["BPJS / THR cadangan 10%", rp(0.77e6), ""], ["Total per bulan", rp(8.47e6), ""]], [3.0, 2.2, 4.1], 1.5, 0.45);
-T(s, "Catatan: dengan 3 orang tanpa pengganti, hari libur harus ditutup pengelola atau jam buka dipendekkan. Gaji dibayar tanggal 1.", { x: 0.35, y: 4.5, w: 9.3, h: 0.6, fontSize: 12, color: muted });
+// 26 karyawan
+s = base(); head(s, "Cafe: 3 karyawan dan penggajian", "Dihitung terpisah dari bagian pengelola. Gaji pokok asumsi, cek UMK setempat.");
+table(s, [["Posisi", "Gaji / bulan", "Tugas"], ["Waiters", rp(2.4e6), "Antar pesanan, bersih meja, layani pelanggan"], ["Cooks", rp(2.8e6), "Masak, siapkan bahan, jaga stok dapur"], ["Kasir", rp(2.5e6), "Transaksi POS, catat penjualan, tutup kas harian"], ["BPJS / THR cadangan 10%", rp(0.77e6), ""], ["Total per bulan", rp(8.47e6), ""]], [3.0, 2.2, 4.1], 1.5, 0.45);
+T(s, "Catatan: dengan 3 orang tanpa pengganti, hari libur harus ditutup Andre sebagai operasional atau jam buka dipendekkan. Gaji dibayar tanggal 1.", { x: 0.35, y: 4.5, w: 9.3, h: 0.6, fontSize: 12, color: muted });
 
-// 25 cafe event & marketing
-s = base(); head(s, "Cafe: event & marketing", "Dibiayai dari porsi marketing 8% dan event 5%.");
-box(s, 0.35, 1.5, 4.55, 3.5, "Event", ["Live music akustik tiap Jumat malam", "Nobar & kuis mingguan", "Kelas kopi dan workshop komunitas", "Paket ulang tahun / arisan / rapat kecil", "Paket gabungan main futsal + ngopi"]);
-box(s, 5.1, 1.5, 4.55, 3.5, "Marketing", ["Konten harian IG/TikTok: menu baru, suasana, promo", "Kartu loyalitas / stempel digital", "Promo jam sepi (14.00–17.00)", "Pre-order & pesan antar lewat WhatsApp", "Google Maps: foto, ulasan, jam buka terbaru"], moss);
+// 27 event & partner
+s = base(); head(s, "Cafe: event & kerja sama partner", "Dibiayai dari porsi marketing & event 7%, dibantu sponsor partner.");
+box(s, 0.35, 1.5, 4.55, 2.2, "Event cafe", ["Live music akustik tiap Jumat malam", "Nobar, kuis, kelas kopi, workshop komunitas", "Paket gabungan main futsal + ngopi"]);
+box(s, 5.1, 1.5, 4.55, 2.2, "Partner event", ["Tim event atau EO luar, brand besar (mis. Djarum atau lainnya)", "Partner membawa sponsor dan peserta, kita sediakan venue dan F&B", "Hitung bagi hasil per event, tidak ditanggung porsi 20%"], moss);
+box(s, 0.35, 3.85, 9.3, 1.35, "Catatan aturan sponsor rokok", ["PP 28/2024 tidak melarang sponsor perusahaan rokok, tetapi promosi produk tembakau dibatasi dan iklan luar ruang dilarang dalam radius 500 m dari sekolah", "Untuk event sekolah, pakai sponsor non-rokok atau tanpa logo/merek produk rokok; cek ke sekolah dan dinas dulu"], clayDeep);
 
-// 26 keputusan
-s = base(); head(s, "Yang perlu diputuskan sebelum diajukan");
-box(s, 0.35, 1.2, 9.3, 1.9, "Cafe: sisa pemilik tipis", [`Realistis: sisa 50% ${jt(cafe[1].rev - cafe[1].share)}, dikurangi bahan baku, packaging, dan biaya tetap, tinggal ${jt(cafe[1].ownerNet)}. Konservatif tinggal ${jt(cafe[0].ownerNet)}.`, "Lebih mudah disetujui: 50% dari laba kotor (omzet dikurangi bahan baku), atau porsi 40%."], clayDeep);
-box(s, 0.35, 3.25, 9.3, 1.9, "Langkah berikut", ["Ganti asumsi (pelanggan, gaji, listrik, sewa) dengan data lokasi di file Excel", "Tulis kontrak: dasar hitung, laporan bulanan, cek kas", "Uji 3 bulan pertama, lalu evaluasi porsi 30% / 50%"]);
+// 28 keputusan
+s = base(); head(s, "Yang perlu diputuskan sebelum jalan");
+box(s, 0.35, 1.2, 9.3, 1.9, "Angka kunci", [`Cafe target ${jt(cafe[1].rev)}: pengelola ${jt(cafe[1].share)}, net owner ${jt(cafe[1].ownerNet)} (${Math.round(cafe[1].ownerNet / cafe[1].rev * 100)}% omzet).`, `Futsal target ${jt(fut[1].rev)}: pengelola ${jt(fut[1].share)}, net owner ${jt(fut[1].owner)}. Butuh 7 jam terjual per hari per lapangan.`, "Target butuh push nyata: 80 pelanggan cafe per hari dan turnamen sekolah rutin."], clayDeep);
+box(s, 0.35, 3.25, 9.3, 1.95, "Langkah berikut", ["Ganti asumsi di Excel dengan data lokasi (tarif, gaji, listrik, sewa)", "Pak Nana approval kontrak dan angka; Pak Riki putuskan jalan", "Pasang POS, hubungkan ke dashboard, evaluasi tiap bulan selama 3 bulan pertama"]);
 }
 
 await mkdir("/home/claude/ws/public/pitch", { recursive: true });

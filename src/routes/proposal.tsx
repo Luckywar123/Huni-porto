@@ -13,8 +13,8 @@ const ops = target * 0.15;
 
 const models = [
   { name: "Kos & kontrakan", share: "30%", points: ["15% System & Marketing", "15% Perawatan & operasional", "Build web diambil dari pos System"] },
-  { name: "Lapangan futsal", share: "30%", points: ["Maintenance 10%, event 8%", "Marketing 7%, fee pengelola 5%", "Booking lewat halaman Futsal"], featured: true },
-  { name: "Cafe", share: "50%", points: ["Gaji 3 karyawan, marketing, event, maintenance", "Sisa 50% untuk pemilik", "Fee pengelola = sisa dari 50%"] },
+  { name: "Lapangan futsal", share: "30%", points: ["Maintenance 8%, event 9%", "Marketing 9%, fee pengelola 4%", "Turnamen sekolah dan booking lewat web"], featured: true },
+  { name: "Cafe", share: "20%", points: ["Include marketing, branding, operasional, biaya POS", "Karyawan 3 orang dihitung terpisah", "Sisanya net income owner"] },
 ];
 
 function ProposalPage() {
