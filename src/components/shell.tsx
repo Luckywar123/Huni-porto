@@ -43,6 +43,13 @@ export function Header() {
             Futsal
           </Link>
           <Link
+            to="/dashboard"
+            className="rounded-md px-3 py-2 text-sm font-medium text-ink-soft hover:bg-paper-2"
+            activeProps={{ className: "rounded-md bg-paper-2 px-3 py-2 text-sm font-medium text-ink" }}
+          >
+            Dashboard
+          </Link>
+          <Link
             to="/proposal"
             className="rounded-md px-3 py-2 text-sm font-medium text-ink-soft hover:bg-paper-2"
             activeProps={{ className: "rounded-md bg-paper-2 px-3 py-2 text-sm font-medium text-ink" }}
