@@ -1,0 +1,27 @@
+server:
+  port: ${PORT:8080}
+  error:
+    include-message: always
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: none
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 6MB
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${SUPABASE_URL}/auth/v1/.well-known/jwks.json
+supabase:
+  url: ${SUPABASE_URL}
+  service-key: ${SUPABASE_SERVICE_KEY}
+app:
+  cors-origins: ${CORS_ORIGINS:http://localhost:5173}
