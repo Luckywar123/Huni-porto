@@ -1,6 +1,6 @@
 # HUNI — Kost, Kontrakan & Futsal
 
-Monorepo: **web** (React) · **api** (Java Spring Boot) · **supabase** (SQL).
+Monorepo: **web** (React, di root repo) · **api** (Java Spring Boot) · **supabase** (SQL).
 Web dan app Android sama-sama konsumsi REST API yang sama.
 
 ```
@@ -34,12 +34,11 @@ mvn spring-boot:run    # http://localhost:8080
 
 ## 3. Web
 ```bash
-cd web
 cp .env.example .env   # VITE_API_URL, VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY
 npm install
 npm run dev            # http://localhost:5173
 ```
-Deploy ke Vercel: root directory `web`, set 3 env var di atas.
+Deploy ke Vercel: Root Directory dikosongkan (root repo), set 3 env var di atas, lalu Redeploy.
 
 ## Endpoint
 | Method | Path | Akses |
